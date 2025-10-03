@@ -18,25 +18,30 @@ export default function ShareButton({ poolId, className }: ShareButtonProps) {
   const [isPending, startTransition] = useTransition()
 
   const handleShare = () => {
-    if (!('clipboard' in navigator)) {
-      window.alert('Copy the code manually from the pool card.')
-      return
-    }
-
     startTransition(async () => {
       const result = await getShareMessage(poolId)
-
-      if (!result?.success || !result.message) {
-        setFeedback('Pool code copied! Visit the pool card to share manually.')
-        return
-      }
+      const shareMessage = result?.success && result.message
+        ? result.message
+        : `Join our PL Survivor Pool\n${PLACEHOLDER_LINK}`
 
       try {
-        await navigator.clipboard.writeText(result.message)
-        setFeedback('Invite message copied to clipboard!')
+        if (navigator.share) {
+          await navigator.share({ text: shareMessage })
+          setFeedback('Invite ready to send!')
+          return
+        }
+
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(shareMessage)
+          setFeedback('Invite copied to clipboard!')
+          return
+        }
+
+        // Fallback when clipboard/share not available
+        setFeedback('Share this invite: ' + shareMessage)
       } catch (error) {
-        console.error('ShareButton: clipboard write failed', error)
-        setFeedback('Copy failed. You can share: ' + PLACEHOLDER_LINK)
+        console.error('ShareButton: invite share failed', error)
+        setFeedback('Copy failed. Share this invite: ' + shareMessage)
       }
     })
   }
