@@ -7,7 +7,6 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -38,15 +37,15 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-50 to-white">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Welcome Back</CardTitle>
-          <CardDescription>Login to your survivor pool</CardDescription>
-        </CardHeader>
-        <form onSubmit={handleLogin}>
-          <CardContent className="space-y-4">
-            <div>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-purple-50 to-white px-4">
+      <div className="w-full max-w-md space-y-6 py-10">
+        <div className="space-y-1 text-center">
+          <h1 className="text-3xl font-semibold text-[#1f0a33]">Welcome back</h1>
+          <p className="text-sm text-gray-600">Log in to your survivor pool</p>
+        </div>
+        <form onSubmit={handleLogin} className="space-y-5">
+          <div className="space-y-4">
+            <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
@@ -56,7 +55,7 @@ export default function LoginPage() {
                 required
               />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
@@ -66,23 +65,23 @@ export default function LoginPage() {
                 required
               />
             </div>
-            {error && (
-              <div className="text-red-500 text-sm">{error}</div>
-            )}
-          </CardContent>
-          <CardFooter className="flex flex-col space-y-2">
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Logging in...' : 'Login'}
-            </Button>
-            <p className="text-sm text-gray-600">
-              Don't have an account? {' '}
-              <Link href="/register" className="text-purple-600 hover:underline">
-                Sign up
-              </Link>
-            </p>
-          </CardFooter>
+            {error ? <p className="text-sm text-red-500">{error}</p> : null}
+          </div>
+          <Button
+            type="submit"
+            className="w-full rounded-full bg-purple-600 py-3 text-sm font-semibold text-white shadow-md shadow-purple-200 transition hover:bg-purple-700"
+            disabled={loading}
+          >
+            {loading ? 'Logging in…' : 'Log in'}
+          </Button>
+          <p className="text-sm text-gray-600">
+            Don't have an account?{' '}
+            <Link href="/register" className="font-semibold text-purple-600 hover:underline">
+              Sign up
+            </Link>
+          </p>
         </form>
-      </Card>
+      </div>
     </div>
   )
 }

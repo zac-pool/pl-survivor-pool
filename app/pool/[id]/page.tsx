@@ -50,6 +50,31 @@ const STATUS_COLORS: Record<string, string> = {
   UNKNOWN: 'text-slate-500 bg-slate-500/10 border border-slate-500/20',
 }
 
+function displayTeamName(name: string | null | undefined) {
+  if (!name) return name ?? ''
+  const replacements: Record<string, string> = {
+    'Wolverhampton Wanderers': 'Wolves',
+  }
+  return replacements[name] ?? name
+}
+
+function renderLivesDisplay(current: number, total: number | null) {
+  const hearts = total != null ? total : current
+  const effectiveTotal = hearts > 0 ? hearts : 1
+  return Array.from({ length: effectiveTotal }, (_, index) => {
+    const isActive = index < current
+    return (
+      <span
+        key={index}
+        aria-hidden="true"
+        className={isActive ? 'text-rose-500' : 'text-rose-200'}
+      >
+        {isActive ? '❤' : '♡'}
+      </span>
+    )
+  })
+}
+
 function formatKickoff(dateUtc: string) {
   try {
     return format(new Date(dateUtc), 'EEE d MMM • HH:mm')
@@ -149,7 +174,13 @@ export default async function PoolPage({ params }: { params: { id: string } }) {
       if (weekEndMs != null && time >= weekEndMs) return false
       return true
     })
-    .sort((a, b) => Date.parse(a.commence_time) - Date.parse(b.commence_time))
+    .map((row) => ({
+      ...row,
+      team: displayTeamName(row.team),
+      opponent: displayTeamName(row.opponent),
+    }))
+
+  winPercentRows.sort((a, b) => (b.win_pct ?? 0) - (a.win_pct ?? 0))
 
   const { data: membershipRow, error: membershipError } = await supabase
     .from('pool_members')
@@ -235,7 +266,7 @@ export default async function PoolPage({ params }: { params: { id: string } }) {
   const teamNameMap = new Map<number, string>()
   teamRows?.forEach((team) => {
     if (typeof team.id === 'number') {
-      teamNameMap.set(team.id, team.name)
+      teamNameMap.set(team.id, displayTeamName(team.name))
     }
   })
 
@@ -476,7 +507,12 @@ export default async function PoolPage({ params }: { params: { id: string } }) {
               </div>
               <div className="space-y-1">
                 <p className="text-4xl font-semibold">{livesDisplay}</p>
-                <p className="text-xs uppercase tracking-[0.3em] text-white/60">Lives Remaining</p>
+                <div className="flex items-center gap-2 text-white/80">
+                  <span className="flex gap-1 text-base">
+                    {renderLivesDisplay(currentMemberSummary.livesRemaining, livesPerPlayer)}
+                  </span>
+                  <span className="text-xs uppercase tracking-[0.3em] text-white/60">Lives Remaining</span>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-5 text-sm text-white/80">

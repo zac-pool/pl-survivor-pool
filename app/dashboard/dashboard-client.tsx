@@ -379,7 +379,6 @@ export default function DashboardClient({
                         {livesPerPlayer != null ? `${livesPerPlayer} ${livesPerPlayer === 1 ? 'life' : 'lives'} per player` : 'Lives per player not set'}
                       </p>
                       <p>Pick: {membership.currentPickTeam ?? '--'}</p>
-                      <p>Role: {formatPoolRole(membership.role)}</p>
                       <p>Members: {membership.membersCount ?? '--'}</p>
                       {!membership.pool && (
                         <p className="text-xs text-gray-500">Pool details unavailable</p>
