@@ -76,16 +76,11 @@ export default function QuickPickCard({
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <CardTitle className="text-sm uppercase tracking-[0.3em] text-[#73608f]">
-              Quick Pick
+              GW{currentGameweek} Pick
             </CardTitle>
             <p className="text-2xl font-semibold text-[#2c1147]">
               {currentPick.teamName ? `Picked: ${currentPick.teamName}` : 'No pick submitted'}
             </p>
-            {currentPick.status ? (
-              <p className="text-xs uppercase tracking-widest text-emerald-600">
-                Status: {currentPick.status.toUpperCase()}
-              </p>
-            ) : null}
           </div>
           <div className="rounded-[20px] bg-[#f3eaff] px-4 py-2 text-xs font-semibold text-[#4f2590]">
             Deadline in {deadlineCountdown}

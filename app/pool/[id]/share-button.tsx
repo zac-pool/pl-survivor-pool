@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 const SHARE_TEXT = 'Copy Invite'
-const PLACEHOLDER_LINK = 'https://example.com/join'
+const PLACEHOLDER_LINK = 'https://pl-survivor-pool.vercel.app/'
 
 type ShareButtonProps = {
   poolId: string

@@ -5,6 +5,8 @@ import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://pl-survivor-pool.vercel.app'
+
 const submitPickSchema = z.object({
   poolId: z.string().min(1, 'Pool is required'),
   teamId: z.coerce.number().int('Select a valid team'),
@@ -172,9 +174,12 @@ export async function getShareMessage(poolId: string) {
     }
   }
 
+  const sanitizedCode = pool.code ?? '—'
+  const joinUrl = `${APP_URL.replace(/\/$/, '')}/pool`
+
   const shareMessage = `Join our PL Survivor Pool: ${pool.name || 'Survivor Pool'}\n` +
-    `Pool Code: ${pool.code ?? '—'}\n` +
-    'Sign up at https://example.com/join and use the code to enter.'
+    `Pool Code: ${sanitizedCode}\n` +
+    `Sign up at ${joinUrl} and use the code to enter.`
 
   return {
     success: true,

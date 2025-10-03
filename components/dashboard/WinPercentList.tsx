@@ -24,17 +24,20 @@ function formatKickoffLabel(value: string) {
 }
 
 export function WinPercentList({ rows, gameweek }: { rows: WinPercentRow[]; gameweek?: number | null }) {
+  const sortedRows = [...rows].sort((a, b) => (b.win_pct ?? 0) - (a.win_pct ?? 0))
   return (
     <div className="rounded-3xl bg-white p-6 shadow-sm">
-      <h3 className="text-xl font-semibold">Win %</h3>
+      <h3 className="text-xl font-semibold">
+        {gameweek != null ? `GW${gameweek} Odds` : 'Upcoming Odds'}
+      </h3>
       {gameweek != null && (
         <p className="mb-4 text-xs text-gray-500">Gameweek {gameweek}</p>
       )}
-      {rows.length === 0 ? (
+      {sortedRows.length === 0 ? (
         <p className="text-sm text-gray-500">No win probability data available yet.</p>
       ) : (
         <div className="grid gap-2 sm:grid-cols-2">
-          {rows.map((r) => (
+          {sortedRows.map((r) => (
             <div
               key={`${r.team}-${r.opponent}-${r.commence_time}`}
               className="flex items-center justify-between rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-sm"
